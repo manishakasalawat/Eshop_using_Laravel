@@ -1,11 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Products;
-//use App\Models\Category;
-//use App\Http\Controllers\Admin\ProductsController;
+use PHPUnit\Framework\Test;
+use App\Models\products;
+use App\Models\Category;
 use App\Http\Controllers\ProductsController;
-//App\Http\Controllers\Admin\ProductsController
 
 /*
 |--------------------------------------------------------------------------
@@ -17,67 +16,58 @@ use App\Http\Controllers\ProductsController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/', function () {
+    $products=products::all();
 
-Route::get('/ ', function () {
-    $products = Products::all();
-    return view('products',['products' => $products]);
- });
-
-Route::get('/products/{products}', function (Products $products) {   //route model binding
-            //$product= Product::find($id);
-	//print($products);
-    return view('products',['products' => $products]);
+    return view('home',['products' =>$products]);
 });
 
-Route::get('/create_product', function(){
-    Products::create([
-        'product_name' => 'Laptop',
-        'product_desc' => 'This is Dell Laptop with much functionality',
-        'price' => '150000'
-
-    ]);
-
-});
-
-Route::get('/get_product', function(){
-    $products = Products::get();
-    return $products;
-
-});
-
-Route::get('/create_post', function(){
-    Post::create([
-        'post_name' => 'Update',
-        'post_desc' => 'No stocks available'
-
-    ]);
-
-});
-Route::get('/home', [ProductsController::class,'index']);
-    //return view('home');
 
 
+Route::get('/home',[ProductsController::class,'index']);
 
-Route::get('/categories/{category}', function(Category $category){
-    //$products = Product::whereCategoryId($category->id)->get();
+Route::resource('products', ProductsController::class)->only(['index', 'show']);
+
+Route::get('search', [App\Http\Controllers\SearchController::class, 'search'])->name('search');
+
+Route::get('/categories/{category}',function(Category $category){
+    
+    //$products = products::whereCategoryId($category->id)->get();
     $products = $category->products;
-    return view('category', ['products' => $products, 'category' => $category]);
 
+    return view('category', ['products' => $products, 'category'  => $category]);
 });
 
+Route::resource('order', App\Http\Controllers\OrderController::class);
+Route::post('cart', [App\Http\Controllers\OrderItemController::class, 'store'])
+                            ->name('add_to_cart')
+                            ->middleware('auth');
 
 //admin routing
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function(){
 
-Route::get('/admin/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
-Route::get('/admin/products', [App\Http\Controllers\Admin\ProductsController::class, 'index'])->name('products_list');
+Route::get('dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
-Route::get('/admin/products/create', [App\Http\Controllers\Admin\ProductsController::class, 'create'])->name('create_product');
+// Route::get('/admin/products', [App\Http\Controllers\Admin\ProductsController::class, 'index'])->name('product_list');
 
-Route::post('/admin/products/store', [App\Http\Controllers\Admin\ProductsController::class, 'store']);
+// Route::get('products/create', [App\Http\Controllers\Admin\ProductsController::class, 'create'])->name('create_product');
 
-Route::get('/admin/products/edit/{product}', [App\Http\Controllers\Admin\ProductsController::class, 'edit']);
+// Route::post('products/store', [App\Http\Controllers\Admin\ProductsController::class, 'store']);
 
 
+
+        
+
+// Route::get('products/edit/{product}', [App\Http\Controllers\Admin\ProductsController::class, 'edit']);
+
+// Route::post('products/update/{product}',[App\Http\Controllers\Admin\ProductsController::class,'update']);
+
+Route::resource('categories',App\Http\Controllers\Admin\CategoriesController::class);
+Route::resource('products',App\Http\Controllers\Admin\ProductsController::class);
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+});
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');

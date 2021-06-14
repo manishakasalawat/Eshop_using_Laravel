@@ -691,7 +691,7 @@ Version:1.0
 .header.shop .search-bar form {
 	display: inline-block;
 	float: left;
-	width: 260px;
+	/* width: 260px; */
 }
 .header.shop .search-bar input {
 	height: 48px;
@@ -3189,7 +3189,9 @@ Version:1.0
 	margin-top: 12px;
 	margin-bottom: 30px;
 }
-.shop.checkout .form{}
+.shop.checkout .form{
+	
+}
 .shop.checkout .form .form-group {
 	margin-bottom: 25px;
 }

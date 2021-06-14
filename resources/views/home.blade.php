@@ -115,8 +115,8 @@
                                                 <div class="product-img">
                                                     <a href="product-details.html">
                                                         {{-- {{ image_crop($product->image) }} --}}
-                                                        <img class="default-img" src= "{{ $product->image == ' '  ? 'https://via.placeholder.com/550x750' : asset('storage/images/thumbnail/' .$product->image) }}" alt="#">
-                                                        <img class="hover-img" src="{{ $product->image == ' '  ? 'https://via.placeholder.com/550x750' : asset('storage/images/thumbnail/' .$product->image) }}" alt="#">
+                                                        <img class="default-img" src= "{{ $product->image == ' '  ? 'https://via.placeholder.com/550x750' : asset('storage/images/' .$product->image) }}" alt="#">
+                                                        <img class="hover-img" src="{{ $product->image == ' '  ? 'https://via.placeholder.com/550x750' : asset('storage/images/' .$product->image) }}" alt="#">
                                                     </a>
                                                     <div class="button-head">
                                                         <div class="product-action">
@@ -125,7 +125,13 @@
                                                             <a title="Compare" href="#"><i class="ti-bar-chart-alt"></i><span>Add to Compare</span></a>
                                                         </div>
                                                         <div class="product-action-2">
-                                                            <a title="Add to cart" href="#">Add to cart</a>
+                                                            <form action="{{ route('add_to_cart') }}" method="POST">
+                                                                @csrf
+                                                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                                <input type="hidden" name="quantity" value="1">
+                                                                <input type="submit" value="Add to Cart">
+                                                                {{-- <a title="Add to cart" href="#" onclick="event.preventDefault(); this.closest('form').submit();">Add to cart</a> --}}
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>

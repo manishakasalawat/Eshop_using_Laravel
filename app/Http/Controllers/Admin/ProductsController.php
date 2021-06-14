@@ -17,7 +17,7 @@ class ProductsController extends Controller
     public function index()
     {
         $products= products::latest()->get();
-        return view('admin/products/index', ['products' => $products]);
+        return view('admin.products.index', ['products' => $products]);
     }
 
     /**
@@ -28,7 +28,7 @@ class ProductsController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('admin/products/create',  compact('categories'));
+        return view('admin.products.create',  compact('categories'));
     }
 
     /**
@@ -70,7 +70,7 @@ class ProductsController extends Controller
         //return $product;
 
         if($product->save()){
-            return redirect()->route('product_list');
+            return redirect()->route('admin.products.store');
         }
         else{
             return redirect()->back();
